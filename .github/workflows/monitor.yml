@@ -1,0 +1,58 @@
+name: Minter Monitor
+
+on:
+  schedule:
+    # Every 15 minutes. GitHub cron is best-effort and can drift 5-15 min under load.
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+# Prevent overlapping runs that could conflict on the state.json commit.
+concurrency:
+  group: minter-monitor
+  cancel-in-progress: false
+
+permissions:
+  contents: write  # required to commit state/*.json back
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OPENSEA_API_KEY: ${{ secrets.OPENSEA_API_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: New collections + holder check
+        run: python scripts/new_collections.py
+        continue-on-error: true
+
+      - name: Whale tracker
+        run: python scripts/whale_tracker.py
+        continue-on-error: true
+
+      - name: Mint tracker
+        run: python scripts/mint_tracker.py
+        continue-on-error: true
+
+      - name: Commit state changes
+        run: |
+          git config user.name "minter-bot"
+          git config user.email "minter-bot@users.noreply.github.com"
+          if ! git diff --quiet -- state/; then
+            git add state/
+            git commit -m "state: update $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          else
+            echo "No state changes."
+          fi

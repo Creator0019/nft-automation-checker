@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm /Users/bot1/Desktop/Minter/Minter)",
+      "Bash(mkdir -p /Users/bot1/Desktop/Minter/.github/workflows /Users/bot1/Desktop/Minter/scripts /Users/bot1/Desktop/Minter/lib /Users/bot1/Desktop/Minter/state)",
+      "Bash(python3 -m py_compile lib/config.py lib/state.py lib/telegram.py lib/opensea.py scripts/new_collections.py scripts/whale_tracker.py scripts/mint_tracker.py)",
+      "Bash(python3 *)"
+    ]
+  }
+}
