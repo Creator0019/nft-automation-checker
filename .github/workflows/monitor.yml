@@ -49,10 +49,11 @@ jobs:
         run: |
           git config user.name "minter-bot"
           git config user.email "minter-bot@users.noreply.github.com"
-          if ! git diff --quiet -- state/; then
-            git add state/
+          git add state/
+          # --cached --quiet returns nonzero if there's anything staged (new, modified, deleted).
+          if git diff --cached --quiet; then
+            echo "No state changes."
+          else
             git commit -m "state: update $(date -u +%Y-%m-%dT%H:%MZ)"
             git push
-          else
-            echo "No state changes."
           fi

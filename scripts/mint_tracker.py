@@ -32,11 +32,25 @@ def main():
 
     st = state.load(STATE_KEY)
     alerted: set[str] = set(st.get("alerted_slugs") or [])
+    is_first_run = not alerted  # No prior state means first run.
 
     now = datetime.now(timezone.utc)
 
     collections = opensea.list_collections(order_by="created_date", limit=100)
     print(f"[mint] scanning {len(collections)} recent collections")
+
+    # On the first run, seed alerted set with anything already above threshold so we
+    # don't fire on pre-existing collections — only on ones that cross threshold AFTER we start watching.
+    if is_first_run:
+        seeded = 0
+        for c in collections:
+            slug = c.get("collection") or c.get("slug")
+            if slug:
+                alerted.add(slug)
+                seeded += 1
+        state.save(STATE_KEY, {"alerted_slugs": sorted(alerted), "last_run": now.isoformat()})
+        print(f"[mint] first run: seeded {seeded} slugs, no alerts sent.")
+        return
 
     alerts = 0
     for c in collections:
