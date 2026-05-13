@@ -68,7 +68,12 @@ def main():
                 f"(last {LOOKBACK_MINUTES} min)\n"
                 f"• Wallet: <a href=\"{esc(wallet_url)}\">{esc(address)}</a>"
             )
-            telegram.send(msg)
+            try:
+                telegram.send(msg)
+            except telegram.TelegramAuthError:
+                print("[whale] Aborting: Telegram auth failed.")
+                state.save(STATE_KEY, {"seen_keys": sorted(seen_keys), "last_run": now.isoformat()})
+                return
             seen_keys.add(key)
             alerts += 1
 

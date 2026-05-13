@@ -66,7 +66,12 @@ def main():
             f"{x_line}\n"
             f"• OpenSea: <a href=\"{esc(opensea_url)}\">{esc(opensea_url)}</a>"
         )
-        telegram.send(msg)
+        try:
+            telegram.send(msg)
+        except telegram.TelegramAuthError:
+            print("[mint] Aborting: Telegram auth failed.")
+            state.save(STATE_KEY, {"alerted_slugs": sorted(alerted), "last_run": now.isoformat()})
+            return
         alerted.add(slug)
         alerts += 1
         time.sleep(1)

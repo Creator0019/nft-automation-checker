@@ -3,9 +3,20 @@ import html
 import requests
 from .config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 
+# Module-level circuit breaker: once Telegram returns a fatal auth error (401/403/404),
+# stop trying for the rest of this run. No point retrying with the same bad token.
+_FATAL = False
+
+
+class TelegramAuthError(RuntimeError):
+    pass
+
 
 def send(text: str, disable_preview: bool = True) -> None:
-    """Send a Telegram message. Silently logs and continues on failure so one bad send doesn't kill the run."""
+    """Send a Telegram message. Raises TelegramAuthError on fatal auth failure so the calling script can stop early."""
+    global _FATAL
+    if _FATAL:
+        raise TelegramAuthError("Telegram disabled for this run due to earlier auth failure.")
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         print("[telegram] Skipping send — bot token or chat id not configured.")
         print(text)
@@ -23,6 +34,11 @@ def send(text: str, disable_preview: bool = True) -> None:
             },
             timeout=15,
         )
+        if r.status_code in (401, 403, 404):
+            _FATAL = True
+            print(f"[telegram] FATAL auth/permission error {r.status_code}: {r.text[:300]}")
+            print("[telegram] Check TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID secrets. Suppressing further sends this run.")
+            raise TelegramAuthError(f"Telegram {r.status_code}: {r.text[:200]}")
         if r.status_code != 200:
             print(f"[telegram] send failed {r.status_code}: {r.text[:300]}")
     except requests.RequestException as e:

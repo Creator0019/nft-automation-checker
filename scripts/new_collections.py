@@ -67,6 +67,7 @@ def main():
 
     st = state.load(STATE_KEY)
     seen_slugs: set[str] = set(st.get("seen_slugs") or [])
+    is_first_run = not seen_slugs  # No prior state means this is the first run.
     resolved_targets: dict[str, str] = resolve_targets(st.get("resolved_targets") or {})
     target_address_to_username = {v.lower(): k for k, v in resolved_targets.items() if v}
 
@@ -76,22 +77,40 @@ def main():
     collections = opensea.list_collections(order_by="created_date", limit=100)
     print(f"[new-collections] fetched {len(collections)} collections")
 
+    # On the very first run, seed the state with every visible slug and exit silently.
+    # Otherwise the first run would alert on 100 collections at once.
+    if is_first_run:
+        for c in collections:
+            slug = c.get("collection") or c.get("slug")
+            if slug:
+                seen_slugs.add(slug)
+        state.save(STATE_KEY, {
+            "seen_slugs": sorted(seen_slugs),
+            "resolved_targets": resolved_targets,
+            "last_run": now.isoformat(),
+        })
+        print(f"[new-collections] first run: seeded {len(seen_slugs)} slugs, no alerts sent.")
+        return
+
     new_alerts = 0
     for c in collections:
         slug = c.get("collection") or c.get("slug")
         if not slug or slug in seen_slugs:
             continue
 
+        # Require a parseable created_date within the lookback window.
+        # If created_date is missing or older than cutoff, skip silently (don't alert, don't mark seen — let it be reconsidered next run if it appears again).
         created = c.get("created_date")
-        if created:
-            try:
-                ts = datetime.fromisoformat(created.replace("Z", "+00:00")).timestamp()
-            except ValueError:
-                ts = None
-            if ts and ts < cutoff:
-                # Older than our lookback window. Mark seen to avoid re-checking forever.
-                seen_slugs.add(slug)
-                continue
+        if not created:
+            continue
+        try:
+            ts = datetime.fromisoformat(created.replace("Z", "+00:00")).timestamp()
+        except (ValueError, AttributeError):
+            continue
+        if ts < cutoff:
+            # Older than lookback. Mark seen so we don't keep re-evaluating it.
+            seen_slugs.add(slug)
+            continue
 
         try:
             stats = opensea.collection_stats(slug)
@@ -118,7 +137,11 @@ def main():
                 print(f"[holders] {slug} failed: {e}")
 
         msg = format_alert(c, stats, x_url, target_hits)
-        telegram.send(msg)
+        try:
+            telegram.send(msg)
+        except telegram.TelegramAuthError:
+            print("[new-collections] Aborting alerts: Telegram auth failed. State will still be saved.")
+            break
         seen_slugs.add(slug)
         new_alerts += 1
 
