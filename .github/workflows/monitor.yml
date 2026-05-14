@@ -2,9 +2,8 @@ name: Minter Monitor
 
 on:
   schedule:
-    # Every 15 minutes, offset off the top of the hour. GitHub explicitly recommends
-    # avoiding :00, :15, :30, :45 because those slots have the most cron contention.
-    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+    # Every 15 minutes, offset off the top of the hour to dodge cron contention at :00/:15/:30/:45.
+    # See https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
     - cron: "3,18,33,48 * * * *"
   workflow_dispatch: {}
 
