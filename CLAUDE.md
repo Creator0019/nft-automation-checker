@@ -34,6 +34,10 @@ Each run: checkout repo → install deps → run the three scripts in sequence (
 
 `concurrency: minter-monitor` prevents overlapping runs from race-conditioning the state commit.
 
+**Cron schedule is `3,18,33,48 * * * *` (every 15 min, offset off the top of the hour).** Top-of-hour slots (:00 etc.) are the most congested on GitHub's scheduler; the offset reduces delay. Do not switch back to `*/15`.
+
+**The bot's own state commits do NOT trigger workflow runs.** GitHub deliberately prevents `GITHUB_TOKEN`-authored commits from firing event triggers, so there is no risk of recursion. The schedule fires independently.
+
 ### State pattern
 
 Every script follows the same shape:
@@ -76,3 +80,18 @@ Secrets come from env: `OPENSEA_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_I
 ## Free-tier budget
 
 Private repo on GitHub Free = 2,000 Action minutes/month. Every-15-min schedule × ~1 min/run × 30 days ≈ 2,400–2,900 min, which is **over** the limit. Mitigations: make repo public (unlimited minutes), increase cron interval to 30 min, or set a $0 spending cap and accept end-of-month pauses.
+
+## Scheduling reliability on free private repos
+
+GitHub deprioritizes scheduled workflows on free-tier private repos. Cron firings are routinely delayed 30+ min and sometimes skipped entirely during high load. This is documented behavior, not a bug. If reliability matters, the user should either make the repo public (free, prioritized scheduling) or move to a paid plan. Don't waste time trying to "fix" missed cron runs by changing the workflow — the cause is not the YAML.
+
+## Local push gotcha
+
+The bot commits to `main` from inside the workflow (state updates as `minter-bot`). After any successful run, the remote `main` is ahead of the user's local clone. A naive `git push` will be rejected. The reliable flow when the user has uncommitted local changes:
+
+```bash
+git pull --rebase origin main
+git push
+```
+
+This replays local commits on top of the bot's state commits. Because the bot only edits `state/*.json` and humans rarely touch those, conflicts are essentially impossible. Don't suggest a merge commit here — rebase keeps the history readable.
