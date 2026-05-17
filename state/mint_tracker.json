@@ -4,6 +4,7 @@
     "0x229cffeff8679fca10cc41bf444dec2248676f7b",
     "0x291c6db7092c3bcfeaf082178e4a88d18c41a94b",
     "0x4ddef5e87ee645bc985cf29e803dd2dd29f12644",
+    "0x512collection",
     "0x51f990a9bb9bf33107872db8c52388d705e1541b",
     "0x6290fc43af353d5d7b1767790ba69d7e24960383",
     "0x6a1c9f82d1b1fe26ddf556ff4ed4bc528b03d2cf",
@@ -284,5 +285,5 @@
     "x-rayed-326375753",
     "zylorix-infection"
   ],
-  "last_run": "2026-05-17T20:41:48.661515+00:00"
+  "last_run": "2026-05-17T20:48:58.113348+00:00"
 }
