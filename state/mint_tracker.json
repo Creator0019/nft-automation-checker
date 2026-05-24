@@ -1,6 +1,7 @@
 {
   "alerted_slugs": [
     "-projectryujin",
+    "0x06e02154bb941214f7544855eb7d293aec805eb6",
     "0x229cffeff8679fca10cc41bf444dec2248676f7b",
     "0x291c6db7092c3bcfeaf082178e4a88d18c41a94b",
     "0x335de72cddbfb425b020bffcc788e91c639581d7",
@@ -34,6 +35,7 @@
     "abnormal-mferz",
     "abnormal-piggy",
     "abstract-creature-158530109",
+    "acrylics-universe",
     "adopte-une-plume",
     "aether-drift-by-eliz",
     "aether-drift-by-gorge-matzudo",
@@ -503,5 +505,5 @@
     "zsquared",
     "zylorix-infection"
   ],
-  "last_run": "2026-05-24T12:45:42.493490+00:00"
+  "last_run": "2026-05-24T13:00:58.023414+00:00"
 }
