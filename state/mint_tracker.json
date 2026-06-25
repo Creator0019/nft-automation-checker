@@ -3,6 +3,7 @@
     "-projectryujin",
     "0x00139216da5f3482d9e319285c176b5260fee89e",
     "0x06e02154bb941214f7544855eb7d293aec805eb6",
+    "0x0bb10215d7cc9428c018655988b2dd58c48ffd1d",
     "0x0be82245989f9e46780eff24ef65869cf549af2a",
     "0x229cffeff8679fca10cc41bf444dec2248676f7b",
     "0x26f730370a2d93289336e7586fec73e0888fed61",
@@ -1290,6 +1291,7 @@
     "stardraw-pirates",
     "starelic",
     "static-echoes",
+    "steliora-genesis-collection",
     "stems-fm",
     "stickpunks-v0",
     "stoneymon",
@@ -1588,5 +1590,5 @@
     "zzhh-707009110",
     "zzz-106589698"
   ],
-  "last_run": "2026-06-25T20:15:50.109461+00:00"
+  "last_run": "2026-06-25T20:31:07.633518+00:00"
 }
