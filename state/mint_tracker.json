@@ -40,6 +40,7 @@
     "0x93de216212634b6b91e1803bc92902586b797555",
     "0x96af7cc9c18e1fc7187c9cdc131c878a0e01c780",
     "0x9e985f5d24f5a0819ab248fbb586a4d19bfc5205",
+    "0xa28a908cee348bc53d403f96daa52cf47af9e0fc",
     "0xa3e922cd803b0ea7b981e40de654155ea6803fff",
     "0xa678fba387ca6e5d44564c24e123438e69a891ef",
     "0xa717c6f737c7aaed92cc951db08f2aecf31f5401",
@@ -1629,6 +1630,7 @@
     "shweepnfts",
     "sicko-bit",
     "sigil-system",
+    "sigils-832533156",
     "sigma-ethereum",
     "signal--objects",
     "signal-objects",
@@ -1803,6 +1805,7 @@
     "the-last-dynasty",
     "the-last-dynasty-733126183",
     "the-lonely-416985912",
+    "the-looking-man",
     "the-maddox",
     "the-manga-machine-porcelain-androids",
     "the-mapping-code-by-xhaus",
@@ -2092,5 +2095,5 @@
     "zzhh-707009110",
     "zzz-106589698"
   ],
-  "last_run": "2026-08-07T14:16:00.933160+00:00"
+  "last_run": "2026-08-07T14:31:22.481392+00:00"
 }
