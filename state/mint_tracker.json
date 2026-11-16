@@ -2,6 +2,7 @@
   "alerted_slugs": [
     "-projectryujin",
     "0x00139216da5f3482d9e319285c176b5260fee89e",
+    "0x03c079ba3d11fea9b7b0e765376f036562c16419",
     "0x06e02154bb941214f7544855eb7d293aec805eb6",
     "0x0bb10215d7cc9428c018655988b2dd58c48ffd1d",
     "0x0be82245989f9e46780eff24ef65869cf549af2a",
@@ -1470,6 +1471,7 @@
     "monarch-151691519",
     "mondrian-kinetic",
     "monetables",
+    "monki-838141923",
     "monks-yin",
     "mononoke-798525670",
     "monster-mortgage",
@@ -1848,6 +1850,7 @@
     "pmod",
     "pocket-beasts-tcg",
     "pocket-cosmos-486117023",
+    "pocket-dragons-197714049",
     "poeniemoenie",
     "poidh-claims-v3-539113559",
     "poidh-claims-v3-633394933",
@@ -2685,5 +2688,5 @@
     "zzhh-707009110",
     "zzz-106589698"
   ],
-  "last_run": "2026-11-16T07:09:45.341354+00:00"
+  "last_run": "2026-11-16T17:05:40.899724+00:00"
 }
